@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.resizable {
+        resize: both; /* allows resizing in both directions */
+        overflow: auto;
+}
