@@ -4,69 +4,89 @@ import { terminals } from "../constants/terminal";
 import { Editor } from "@monaco-editor/react";
 import { MenuIcon } from "lucide-react";
 import { XIcon } from "lucide-react";
-import jQuery from "jquery";
 
 const EditorPage = () => {
   const [terminal, setTerminal] = useState("Terminal");
   const [language, setLanguage] = useState("javascript");
   const [sideBarShown, setSideBarShown] = useState(false);
+  const [editorWidth, setEditorWidth] = useState(window.innerWidth);
 
   // const handleValidation = (markers)=> {
   //   markers.forEach(marker=> console.log('onValidate', marker.message))
   // }
+
+  useEffect(() => {
+    sideBarShown
+      ? setEditorWidth(window.innerWidth - 200)
+      : setEditorWidth(window.innerWidth);
+    window.onresize = () => {
+      setEditorWidth(window.innerWidth);
+    };
+    console.log(editorWidth);
+  }, [sideBarShown]);
+
   return (
-    <main
-      className={`grid grid-rows-[60px_1fr] min-h-screen overflow-hidden  bg-black ${sideBarShown ? 'grid-cols-[200px_1fr]': 'grid-cols-[1fr]'}`}
-    >
-      <nav className=" w-full flex text-white col-start-1 col-end-3 items-center row-span-1">
+    <main id="editor-page" className={`  bg-black overflow-hidden`}>
+      <nav className=" flex flex-wrap text-white col-start-1 border-b border-b-gray-600 col-end-3 items-center row-span-1">
         {sideBarShown ? (
-          <XIcon onClick={()=> setSideBarShown(!sideBarShown)} size={28} className="m-4" />
+          <XIcon
+            onClick={() => setSideBarShown(!sideBarShown)}
+            size={28}
+            className="m-4 cursor-pointer md:block hidden"
+          />
         ) : (
-          <MenuIcon onClick={()=> setSideBarShown(!sideBarShown)} size={28} className=" m-4" />
+          <MenuIcon
+            onClick={() => setSideBarShown(!sideBarShown)}
+            size={28}
+            className=" m-4 cursor-pointer md:block hidden"
+          />
         )}
-        <button className=" hover:border hover:border-gray-400 rounded-md px-3 py-[2px]">Files</button>
+        <button className=" hover:border hover:border-gray-400 rounded-md px-3 md:mx-2 mx-4 py-[2px]">
+          Files
+        </button>
       </nav>
-      {sideBarShown ? (
-        <aside className={` col-start-1 col-end-2 row-start-2 row-end-3 bg-white text-white`}>
-          {/* <!-- Additional content can go here --> */}
-        </aside>
-      ) : (
-        ""
-      )}
+      <aside
+        className={`${
+          sideBarShown ? "md:flex" : "hidden"
+        } hidden resize-x bg-gray-900/25`}
+      ></aside>
       {/* <!-- Left Section: Resizable Horizontally --> */}
-      <section className={`grid grid-rows-[80px_1fr_250px] ${sideBarShown? 'col-start-2 col-end-3' : 'col-start-1'} row-span-1`}>
+      <section
+        className={`grid grid-rows-[80px_1fr_250px] ${
+          sideBarShown ? "md:col-start-2 " : "md:col-start-1"
+        } col-start-1 col-end-3 row-span-1`}
+      >
         {/* <!-- Header Section --> */}
-        <header className="bg-black text-[#222831] flex flex-col justify-center px-4">
-          <div className=" flex items-center justify-between flex-wrap w-full mb-3">
-            <select
-              name="lang"
-              id="lang"
-              className="text-white bg-black outline-none border-gray-400 border px-3 py-1 rounded-md"
-            >
-              {languages.map((lang, i) => (
-                <option value={lang} key={i}>
-                  {lang}
-                </option>
-              ))}
-            </select>
-            <button className="border text-white border-gray-400 px-3 py-1 rounded">
-              Run
-            </button>
-          </div>
+        <header className="bg-black text-[#222831] flex flex-wrap items-center justify-between max-w-full px-4">
+          <select
+            name="lang"
+            id="lang"
+            className="text-white bg-black outline-none border-gray-400 border px-3 py-1 rounded-md"
+          >
+            {languages.map((lang, i) => (
+              <option value={lang} key={i}>
+                {lang}
+              </option>
+            ))}
+          </select>
+          <button className="border text-white border-gray-400 px-3 lg:mr-12 py-1 rounded">
+            Run
+          </button>
         </header>
         {/* <!-- Main Content Area --> */}
+
         <Editor
           defaultLanguage={language}
           language={language}
           defaultValue=""
           theme="vs-dark"
-          className=" row-start-2 row-end-3"
+          className=""
+          value=""
+          
+          width={editorWidth}
         />
-        {/* <article className="bg-[#222831] text-white text-2xl resize-y h-full outline outline-1 outline-[#3b434f] p-3 overflow-auto">
-          Write your code here
-        </article> */}
-        {/* <!-- Footer Section --> */}
-        <footer className=" text-[gray] row-start-3 row-end-4 bg-[#181818] h-full border-t-[1.4px] border-t-gray-500">
+
+        <footer className=" text-[gray] bg-[#101010] h-full border-t-[1.4px] border-t-gray-500">
           <div className="flex gap-4 w-full px-4">
             {terminals.map((term, i) => (
               <button
@@ -79,14 +99,13 @@ const EditorPage = () => {
                 {term}
               </button>
             ))}
-            <button className="ml-auto hover:text-gray-300 cursor-pointer">
+            <button className="ml-auto hover:text-gray-300 cursor-pointer pt-1 lg:mr-12">
               Close
             </button>
           </div>
           <div className=" px-6 pt-2">{terminal}</div>
         </footer>
       </section>
-
     </main>
   );
 };

@@ -7,3 +7,17 @@
         resize: both; /* allows resizing in both directions */
         overflow: auto;
 }
+
+#editor-page {
+        display: grid;
+        min-height: 100svh;
+        grid-template-columns: 200px 1fr;
+        grid-template-rows: 60px 1fr;
+}
+
+/* #editor-container {
+        display: grid;
+        min-height: 100svh;
+        grid-template-columns: 1fr;
+        grid-template-rows: 100px repeat();
+} */
