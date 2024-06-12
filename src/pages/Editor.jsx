@@ -27,7 +27,7 @@ const EditorPage = () => {
 
   return (
     <main id="editor-page" className={`  bg-black overflow-hidden`}>
-      <nav className=" flex flex-wrap text-white col-start-1 border-b border-b-gray-600 col-end-3 items-center row-span-1">
+      <nav className=" flex flex-wrap text-white col-start-1 bg-gray-900 border-b border-b-gray-600 col-end-3 items-center row-span-1">
         {sideBarShown ? (
           <XIcon
             onClick={() => setSideBarShown(!sideBarShown)}
@@ -52,7 +52,7 @@ const EditorPage = () => {
       ></aside>
       {/* <!-- Left Section: Resizable Horizontally --> */}
       <section
-        className={`grid grid-rows-[80px_1fr_250px] ${
+        className={`grid grid-rows-[50px_1fr_200px] ${
           sideBarShown ? "md:col-start-2 " : "md:col-start-1"
         } col-start-1 col-end-3 row-span-1`}
       >

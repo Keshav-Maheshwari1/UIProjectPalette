@@ -12,7 +12,15 @@
         display: grid;
         min-height: 100svh;
         grid-template-columns: 200px 1fr;
-        grid-template-rows: 60px 1fr;
+        grid-template-rows: 50px 1fr;
+}
+
+.right {
+        grid-column: 2;
+}
+
+.left {
+        grid-column: 1;
 }
 
 /* #editor-container {
