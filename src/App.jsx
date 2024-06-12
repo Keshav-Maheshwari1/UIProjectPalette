@@ -1,11 +1,12 @@
-import Editor from "./pages/Editor"
-// import Project from "./pages/Project"
+// import Editor from "./pages/Editor"
+import Home from "./pages/Home"
+import Project from "./pages/Project"
 
 const App = ()=> {
 
   return (
     <>
-      <Editor/>
+      <Home/>
     </>
   )
 }
