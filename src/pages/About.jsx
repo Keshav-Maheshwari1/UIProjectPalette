@@ -1,7 +1,7 @@
 import React from "react";
 import { us } from "../constants/about";
 
-const About = () => {
+export const AboutPage = () => {
   return (
     <main className=" min-h-screen sm:px-[4%] py-8 bg-[#12151a]">
       <section className=" gap-y-20 flex  flex-wrap ">
@@ -40,4 +40,4 @@ const About = () => {
   );
 };
 
-export default About;
+
