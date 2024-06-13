@@ -4,6 +4,18 @@ import { terminals } from "../constants/terminal";
 import { Editor } from "@monaco-editor/react";
 import { MenuIcon } from "lucide-react";
 import { XIcon } from "lucide-react";
+import AI from "../Components/AI"
+import Output from "../Components/Output"
+import Problem from "../Components/Problem"
+import Terminal from "../Components/Terminal"
+
+const terminalComponents = {
+  Problem: <Problem/>,
+  Output: <Output/>,
+  Terminal: <Terminal/>,
+  AI: <AI/>
+
+}
 
 const EditorPage = () => {
   const [terminal, setTerminal] = useState("Terminal");
@@ -103,7 +115,7 @@ const EditorPage = () => {
               Close
             </button>
           </div>
-          <div className=" px-6 pt-2">{terminal}</div>
+          {terminalComponents[terminal]}
         </footer>
       </section>
     </main>
