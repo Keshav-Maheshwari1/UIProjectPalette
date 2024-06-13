@@ -34,7 +34,7 @@ export const AboutPage = () => {
         })}
       </section>
       <footer className="text-white">
-        <p>This is ankush yadav</p>
+        <p>This is </p>
       </footer>
     </main>
   );
