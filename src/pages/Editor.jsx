@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { languages } from "../constants/languages";
 import { terminals } from "../constants/terminal";
 import { Editor } from "@monaco-editor/react";
-import { MenuIcon } from "lucide-react";
+import { Code, MenuIcon } from "lucide-react";
 import { XIcon } from "lucide-react";
+<<<<<<< HEAD
 import AI from "../Components/AI"
 import Output from "../Components/Output"
 import Problem from "../Components/Problem"
@@ -17,16 +18,53 @@ const terminalComponents = {
 
 }
 
+=======
+import socketio from "../constants/server";
+>>>>>>> b6e631e22ce152f063d1b3aeda6dc8a846693ac9
 const EditorPage = () => {
   const [terminal, setTerminal] = useState("Terminal");
   const [language, setLanguage] = useState("javascript");
   const [sideBarShown, setSideBarShown] = useState(false);
   const [editorWidth, setEditorWidth] = useState(window.innerWidth);
+  const [inputPrompt, setInputPrompt] = useState(null);
+  const [outputData, setOutputData] = useState([]);
+  const [editorContent, setEditorContent] = useState(
+    {
+      lang: "python",
+      code: "",
+      file: "",
+      type: "",
+    },
+  );
+  const handleSubmit = () => {
+    const updatedContent = {
+      ...editorContent,
+      type: "run",
+    };
+    setEditorContent(updatedContent);
 
+    // Emit the updated state
+    socketio.emit("code", updatedContent);
+  };
+  useEffect(() => {
+    socketio.on("code", (data) => {
+      const cleanedCode = data.code.replace(/[\r\n]/g, "").trim(); // Remove all \r and \n characters
+      setOutputData((prevOutputData) => [...prevOutputData, cleanedCode]);
+      console.log(cleanedCode);
+    });
+
+    // Cleanup listener on unmount
+    return () => {
+      socketio.off("code");
+    };
+  }, []);
+  const handleInput = (input) => {
+    socketio.emit("input", input);
+    setInputPrompt("");
+  };
   // const handleValidation = (markers)=> {
   //   markers.forEach(marker=> console.log('onValidate', marker.message))
   // }
-
   useEffect(() => {
     sideBarShown
       ? setEditorWidth(window.innerWidth - 200)
@@ -81,7 +119,10 @@ const EditorPage = () => {
               </option>
             ))}
           </select>
-          <button className="border text-white border-gray-400 px-3 lg:mr-12 py-1 rounded">
+          <button
+            className="border text-white border-gray-400 px-3 lg:mr-12 py-1 rounded"
+            onClick={handleSubmit}
+          >
             Run
           </button>
         </header>
@@ -93,8 +134,14 @@ const EditorPage = () => {
           defaultValue=""
           theme="vs-dark"
           className=""
-          value=""
-          
+          value={editorContent.code}
+          onChange={(value) =>
+            setEditorContent({
+              ...editorContent,
+              code: value,
+              lang: 'python',
+            })
+          }
           width={editorWidth}
         />
 
@@ -111,7 +158,10 @@ const EditorPage = () => {
                 {term}
               </button>
             ))}
-            <button className="ml-auto hover:text-gray-300 cursor-pointer pt-1 lg:mr-12">
+            <button
+              className="ml-auto hover:text-gray-300 cursor-pointer pt-1 lg:mr-12"
+              onClick={handleSubmit}
+            >
               Close
             </button>
           </div>
