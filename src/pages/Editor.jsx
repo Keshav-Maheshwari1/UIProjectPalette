@@ -98,7 +98,7 @@ const EditorPage = () => {
           width={editorWidth}
         />
 
-        <footer className=" text-[gray] bg-[#101010] h-full border-t-[1.4px] border-t-gray-500">
+        <footer className=" text-[gray] bg-[#101010] grid grid-rows-[40px_1fr] border-t-[1.4px] border-t-gray-500">
           <div className="flex gap-4 w-full px-4">
             {terminals.map((term, i) => (
               <button

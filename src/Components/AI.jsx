@@ -9,7 +9,7 @@ const AI = () => {
   const [prompts, setPrompts] = useState([]);
   const [input, setInput] = useState("");
 
-    useEffect(() => {
+  useEffect(() => {
     socketInitializer();
   }, []);
 
@@ -32,11 +32,12 @@ const AI = () => {
   const loader = (element) => {
     element.textContent = "";
 
-    element.textContent += ".";
-    if (element.textContent === "....") {
-      element.textContent = "";
-    }
-    loaderInterval = setInterval(() => {}, 300);
+    loaderInterval = setInterval(() => {
+      element.textContent += ".";
+      if (element.textContent === "....") {
+        element.textContent = ".";
+      }
+    }, 300);
   };
 
   const typeText = (element, text) => {
@@ -68,7 +69,7 @@ const AI = () => {
         <div class="wrapper ${isAi && "ai"}">
             <div>
 
-                <div id=${uniqueId}>${value}</div>
+                <pre id=${uniqueId} style="color: white;">Q. ${value}</pre>
             </div>
         </div>
     `;
@@ -123,14 +124,18 @@ const AI = () => {
     }
   };
   return (
-    <section className=" w-full bg-gray-500/20 px-4 pt-2 pb-20 overflow-y-auto">
+    <section className=" w-full bg-gray-500/20 row-start-2 row-end-3 grid grid-rows-[1fr_60px] px-4 overflow-y-auto">
       <div
         id="answer-container"
-        className="text-white w-[83%] mx-auto p-5 break-words text-wrap"
+        className="text-white w-[80%] mx-auto p-5 break-words text-wrap"
       >
         <div id="chat-container"></div>
       </div>
-      <form onSubmit={(e) => handleSubmit(e)} onKeyUp={(e) => handleChange(e)}>
+      <form
+        onSubmit={(e) => handleSubmit(e)}
+        onKeyUp={(e) => handleChange(e)}
+        className="w-[80%] mx-auto"
+      >
         <textarea
           name="prompt"
           placeholder="Ask To AI"
@@ -138,7 +143,7 @@ const AI = () => {
           rows={1}
           cols={1}
           type="text"
-          className=" w-[90%] mt-20 outline-none border-none rounded-xl bg-gray-500/30 px-3 py-[6px] text-lg mx-auto"
+          className=" w-full sticky bottom-0 rounded-xl py-3 px-5 font-medium text-white caret-white outline-none border-[white]/30 bg-[#282727] text-lg border-2"
         />
       </form>
     </section>
