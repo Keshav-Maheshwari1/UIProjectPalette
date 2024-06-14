@@ -4,23 +4,14 @@ import { terminals } from "../constants/terminal";
 import { Editor } from "@monaco-editor/react";
 import { Code, MenuIcon } from "lucide-react";
 import { XIcon } from "lucide-react";
-<<<<<<< HEAD
-import AI from "../Components/AI"
-import Output from "../Components/Output"
-import Problem from "../Components/Problem"
-import Terminal from "../Components/Terminal"
 
-const terminalComponents = {
-  Problem: <Problem/>,
-  Output: <Output/>,
-  Terminal: <Terminal/>,
-  AI: <AI/>
+import AI from "../Components/AI";
+import Output from "../Components/Output";
+import Problem from "../Components/Problem";
+import Terminal from "../Components/Terminal";
 
-}
-
-=======
 import socketio from "../constants/server";
->>>>>>> b6e631e22ce152f063d1b3aeda6dc8a846693ac9
+const finalCodePython = `;print("Code is Successfully executed")`;
 const EditorPage = () => {
   const [terminal, setTerminal] = useState("Terminal");
   const [language, setLanguage] = useState("javascript");
@@ -28,14 +19,22 @@ const EditorPage = () => {
   const [editorWidth, setEditorWidth] = useState(window.innerWidth);
   const [inputPrompt, setInputPrompt] = useState(null);
   const [outputData, setOutputData] = useState([]);
-  const [editorContent, setEditorContent] = useState(
-    {
-      lang: "python",
-      code: "",
-      file: "",
-      type: "",
-    },
-  );
+  const [isWaiting, setIsWaiting] = useState(false)
+  const [editorContent, setEditorContent] = useState({
+    lang: language,
+    code: "",
+    file: "",
+    type: "",
+  });
+
+  const terminalComponents = {
+    Problem: <Problem />,
+    Output: <Output />,
+    Terminal: <Terminal code={outputData} isWaiting={isWaiting} handlePrompt = {handlePrompt} />,
+    AI: <AI />,
+  };
+
+
   const handleSubmit = () => {
     const updatedContent = {
       ...editorContent,
@@ -48,7 +47,7 @@ const EditorPage = () => {
   };
   useEffect(() => {
     socketio.on("code", (data) => {
-      const cleanedCode = data.code.replace(/[\r\n]/g, "").trim(); // Remove all \r and \n characters
+      const cleanedCode = data.code; // Remove all \r and \n characters
       setOutputData((prevOutputData) => [...prevOutputData, cleanedCode]);
       console.log(cleanedCode);
     });
@@ -74,6 +73,18 @@ const EditorPage = () => {
     };
     console.log(editorWidth);
   }, [sideBarShown]);
+
+  const handleSelect = (e)=> {
+    setLanguage(e.currentTarget.value);
+  }
+
+  function handlePrompt() {
+    if(e.key==="Enter") {
+      if(e.target.value) {
+        
+      }
+    }
+  }
 
   return (
     <main id="editor-page" className={`  bg-black overflow-hidden`}>
@@ -109,6 +120,7 @@ const EditorPage = () => {
         {/* <!-- Header Section --> */}
         <header className="bg-black text-[#222831] flex flex-wrap items-center justify-between max-w-full px-4">
           <select
+          onChange={handleSelect}
             name="lang"
             id="lang"
             className="text-white bg-black outline-none border-gray-400 border px-3 py-1 rounded-md"
@@ -139,7 +151,7 @@ const EditorPage = () => {
             setEditorContent({
               ...editorContent,
               code: value,
-              lang: 'python',
+              lang: "python",
             })
           }
           width={editorWidth}

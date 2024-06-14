@@ -1,8 +1,11 @@
 import React from 'react'
 
-const Terminal = () => {
+const Terminal = ({code, isWaiting, handlePrompt}) => {
   return (
-    <section>Terminal</section>
+    <section>
+      <p>{code}</p>
+    <input type="text" disabled={!isWaiting} />
+    </section>
   )
 }
 

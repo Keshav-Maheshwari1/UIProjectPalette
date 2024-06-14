@@ -21,7 +21,7 @@ io.on("connection", (socket) => {
     const filename = code.file;
     const syntax = code.code;
     if (type === "run") {
-      switch (lang) {
+      switch (language) {
         case "python":
           process = spawn("python", ["-c", syntax]);
           process.stdout.on("data", (data) => {
