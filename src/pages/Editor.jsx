@@ -11,13 +11,13 @@ import Problem from "../Components/Problem";
 import Terminal from "../Components/Terminal";
 
 import socketio from "../constants/server";
-const finalCodePython = `;print("Code is Successfully executed")`;
+const finalCodePython = +`print("Code is Successfully executed")`;
 const EditorPage = () => {
   const [terminal, setTerminal] = useState("Terminal");
   const [language, setLanguage] = useState("javascript");
   const [sideBarShown, setSideBarShown] = useState(false);
   const [editorWidth, setEditorWidth] = useState(window.innerWidth);
-  const [inputPrompt, setInputPrompt] = useState(null);
+  const [inputPrompt, setInputPrompt] = useState('');
   const [outputData, setOutputData] = useState([]);
   const [isWaiting, setIsWaiting] = useState(false)
   const [editorContent, setEditorContent] = useState({
@@ -30,24 +30,24 @@ const EditorPage = () => {
   const terminalComponents = {
     Problem: <Problem />,
     Output: <Output />,
-    Terminal: <Terminal code={outputData} isWaiting={isWaiting} handlePrompt = {handlePrompt} />,
+    Terminal: <Terminal code={outputData} isWaiting={isWaiting} handlePrompt = {handleInput} />,
     AI: <AI />,
   };
 
-
   const handleSubmit = () => {
+    setOutputData('')
     const updatedContent = {
       ...editorContent,
       type: "run",
     };
     setEditorContent(updatedContent);
-
+    console.log(editorContent)
     // Emit the updated state
     socketio.emit("code", updatedContent);
   };
   useEffect(() => {
     socketio.on("code", (data) => {
-      const cleanedCode = data.code; // Remove all \r and \n characters
+      const cleanedCode = data.code;
       setOutputData((prevOutputData) => [...prevOutputData, cleanedCode]);
       console.log(cleanedCode);
     });
@@ -57,8 +57,13 @@ const EditorPage = () => {
       socketio.off("code");
     };
   }, []);
-  const handleInput = (input) => {
-    socketio.emit("input", input);
+  function handleInput(e) {
+    if(e.key==='Enter') {
+      if(e.target.value) {
+        socketio.emit("input", e.target.value);
+      }
+    }
+    
     setInputPrompt("");
   };
   // const handleValidation = (markers)=> {
@@ -76,14 +81,6 @@ const EditorPage = () => {
 
   const handleSelect = (e)=> {
     setLanguage(e.currentTarget.value);
-  }
-
-  function handlePrompt() {
-    if(e.key==="Enter") {
-      if(e.target.value) {
-        
-      }
-    }
   }
 
   return (

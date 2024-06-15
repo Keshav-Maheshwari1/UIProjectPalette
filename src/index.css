@@ -23,6 +23,10 @@
         grid-column: 1;
 }
 
+.couraselImgs {
+        box-shadow: 0 5px 13px 0 black;
+}
+
 /* #editor-container {
         display: grid;
         min-height: 100svh;

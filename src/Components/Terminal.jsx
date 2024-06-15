@@ -4,7 +4,7 @@ const Terminal = ({code, isWaiting, handlePrompt}) => {
   return (
     <section>
       <p>{code}</p>
-    <input type="text" disabled={!isWaiting} />
+    <input type="text" disabled={!isWaiting} onKeyUp={handlePrompt} />
     </section>
   )
 }
