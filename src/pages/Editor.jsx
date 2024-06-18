@@ -4,71 +4,86 @@ import { terminals } from "../constants/terminal";
 import { Editor } from "@monaco-editor/react";
 import { Code, MenuIcon } from "lucide-react";
 import { XIcon } from "lucide-react";
-
 import AI from "../Components/AI";
 import Output from "../Components/Output";
 import Problem from "../Components/Problem";
 import Terminal from "../Components/Terminal";
-
 import socketio from "../constants/server";
-const finalCodePython = +`print("Code is Successfully executed")`;
 const EditorPage = () => {
   const [terminal, setTerminal] = useState("Terminal");
   const [language, setLanguage] = useState("javascript");
   const [sideBarShown, setSideBarShown] = useState(false);
   const [editorWidth, setEditorWidth] = useState(window.innerWidth);
-  const [inputPrompt, setInputPrompt] = useState('');
+  const [inputPrompt, setInputPrompt] = useState("");
   const [outputData, setOutputData] = useState([]);
-  const [isWaiting, setIsWaiting] = useState(false)
+  const [isWaiting, setIsWaiting] = useState(false);
   const [editorContent, setEditorContent] = useState({
     lang: language,
     code: "",
     file: "",
     type: "",
   });
-
+  const handleInput = (input) => {
+    socketio.emit("input", input);
+    setInputPrompt("");
+  };
   const terminalComponents = {
     Problem: <Problem />,
     Output: <Output />,
-    Terminal: <Terminal code={outputData} isWaiting={isWaiting} handlePrompt = {handleInput} />,
+    Terminal: (
+      <Terminal
+        code={outputData}
+        isWaiting={isWaiting}
+        handleInput={handleInput}
+        inputPrompt={inputPrompt}
+      />
+    ),
     AI: <AI />,
   };
 
   const handleSubmit = () => {
-    setOutputData('')
+    setOutputData("");
+
     const updatedContent = {
       ...editorContent,
+      lang: language,
       type: "run",
     };
-    setEditorContent(updatedContent);
-    console.log(editorContent)
+
     // Emit the updated state
     socketio.emit("code", updatedContent);
   };
+
   useEffect(() => {
     socketio.on("code", (data) => {
       const cleanedCode = data.code;
+      if (data.type === "close") {
+        setIsWaiting(false);
+        setInputPrompt("");
+      } else {
+        setIsWaiting(true)
+        setInputPrompt(cleanedCode);
+      }
+      console.log(cleanedCode)
       setOutputData((prevOutputData) => [...prevOutputData, cleanedCode]);
-      console.log(cleanedCode);
+     
     });
+    // socketio.on("inputPrompt",(data)=>{
+    //   console.log("Entered here")
+    // })
 
     // Cleanup listener on unmount
     return () => {
       socketio.off("code");
+      socketio.off("inputPrompt")
     };
   }, []);
-  function handleInput(e) {
-    if(e.key==='Enter') {
-      if(e.target.value) {
-        socketio.emit("input", e.target.value);
-      }
-    }
-    
-    setInputPrompt("");
-  };
+
+
   // const handleValidation = (markers)=> {
   //   markers.forEach(marker=> console.log('onValidate', marker.message))
   // }
+
   useEffect(() => {
     sideBarShown
       ? setEditorWidth(window.innerWidth - 200)
@@ -76,12 +91,11 @@ const EditorPage = () => {
     window.onresize = () => {
       setEditorWidth(window.innerWidth);
     };
-    console.log(editorWidth);
   }, [sideBarShown]);
 
-  const handleSelect = (e)=> {
+  const handleSelect = (e) => {
     setLanguage(e.currentTarget.value);
-  }
+  };
 
   return (
     <main id="editor-page" className={`  bg-black overflow-hidden`}>
@@ -99,7 +113,12 @@ const EditorPage = () => {
             className=" m-4 cursor-pointer md:block hidden"
           />
         )}
-        <button className=" hover:border hover:border-gray-400 rounded-md px-3 md:mx-2 mx-4 py-[2px]">
+        <button
+          className=" hover:border hover:border-gray-400 rounded-md px-3 md:mx-2 mx-4 py-[2px]"
+          onClick={() => {
+            socketio.emit("input", "hi");
+          }}
+        >
           Files
         </button>
       </nav>
@@ -117,7 +136,7 @@ const EditorPage = () => {
         {/* <!-- Header Section --> */}
         <header className="bg-black text-[#222831] flex flex-wrap items-center justify-between max-w-full px-4">
           <select
-          onChange={handleSelect}
+            onChange={handleSelect}
             name="lang"
             id="lang"
             className="text-white bg-black outline-none border-gray-400 border px-3 py-1 rounded-md"
