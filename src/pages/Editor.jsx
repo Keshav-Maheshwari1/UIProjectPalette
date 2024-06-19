@@ -17,15 +17,20 @@ const EditorPage = () => {
   const [inputPrompt, setInputPrompt] = useState("");
   const [outputData, setOutputData] = useState([]);
   const [isWaiting, setIsWaiting] = useState(false);
+  const [inputData, setInputData] = useState('')
   const [editorContent, setEditorContent] = useState({
     lang: language,
     code: "",
     file: "",
     type: "",
   });
-  const handleInput = (input) => {
-    socketio.emit("input", input);
-    setInputPrompt("");
+  const handleInput = (e) => {
+    setInputData(e.target.value)
+    if(e.key==="Enter") {
+      socketio.emit("input", e.target.value);
+      e.target.value=""
+    }
+   
   };
   const terminalComponents = {
     Problem: <Problem />,
@@ -35,7 +40,6 @@ const EditorPage = () => {
         code={outputData}
         isWaiting={isWaiting}
         handleInput={handleInput}
-        inputPrompt={inputPrompt}
       />
     ),
     AI: <AI />,
@@ -43,7 +47,8 @@ const EditorPage = () => {
 
   const handleSubmit = () => {
     setOutputData("");
-
+    const input = document.getElementById('input-box');
+    input.value=""
     const updatedContent = {
       ...editorContent,
       lang: language,
@@ -57,12 +62,15 @@ const EditorPage = () => {
   useEffect(() => {
     socketio.on("code", (data) => {
       const cleanedCode = data.code;
-      if (data.type === "close") {
-        setIsWaiting(false);
-        setInputPrompt("");
-      } else {
-        setIsWaiting(true)
+      if (data.type === "info" ) {
+        setIsWaiting(true);
+        const input = document.getElementById('input-box');
+        input.focus()
         setInputPrompt(cleanedCode);
+        
+      } else {
+        setIsWaiting(false)
+        setInputPrompt("");
       }
       console.log(cleanedCode)
       setOutputData((prevOutputData) => [...prevOutputData, cleanedCode]);

@@ -62,6 +62,12 @@ io.on("connection", (socket) => {
           });
           processCode.on("exit", (code) => {
             console.log(`About to exit with code: ${code}`);
+            io.emit("code",{
+              lang: language,
+              code: "",
+              type: "close",
+              file: filename,
+            })
             clearInterval(checkProcessRunning); // Stop checking on process exit
             processCode = null;
           });
@@ -75,7 +81,7 @@ io.on("connection", (socket) => {
             if (processCode) {
               io.emit("code", {
                 lang: language,
-                code: "Process is waiting for input.",
+                code: "",
                 type: "info",
                 file: filename,
               });
@@ -90,7 +96,7 @@ io.on("connection", (socket) => {
               console.log("Entered in timeout")
               processCode.stdin.end()
             }
-          }, 10000);
+          }, 100000);
 
           break;
         case "java":

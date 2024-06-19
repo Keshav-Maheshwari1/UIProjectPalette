@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-const Terminal = ({ code, isWaiting, handlePrompt, inputPrompt }) => {
-  const [output,setOuput] = useState('')
+const Terminal = ({ code, isWaiting, handleInput }) => {
 
-  useEffect(() => {
-    if (inputPrompt !== '' && isWaiting) {
-      console.log("Entered")
-      setOuput(inputPrompt);
-    }
-  }, [inputPrompt]);
+
   return (
     <section>
       <p>{code}</p>
-      <input type="text" disabled={!isWaiting}  onKeyUp={handlePrompt} />
+      <input id="input-box"  style={{resize: 'none'}} className="w-fit border-none outline-none bg-transparent text-lg text-white px-2 py-1" type="text" disabled={!isWaiting}  onKeyUp={handleInput} />
     </section>
   );
 };
