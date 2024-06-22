@@ -17,15 +17,14 @@ io.on("connection", (socket) => {
   console.log("connected");
 
   socket.on("code", (code) => {
-    const language = code.lang.toLowerCase();
+    const language = code.lang
     const type = code.type;
     const filename = code.file;
     let syntax = code.code;
-
     if (type === "run") {
       handleCodeExecution(language, syntax, filename, type);
     } else {
-      io.emit("code", code);
+      io.emit("send", code);
     }
   });
 
@@ -74,7 +73,7 @@ function handleCodeExecution(language, syntax, filename, type) {
 
 function executePython(syntax, filename, type, language) {
   processCode = spawn("python", ["-c", syntax]);
-  handleProcessOutput(language,filename, type);
+  handleProcessOutput(language, filename, type);
 }
 
 function executeJava(code, filename, type, language) {

@@ -17,7 +17,7 @@ const EditorPage = () => {
   const [inputPrompt, setInputPrompt] = useState("");
   const [outputData, setOutputData] = useState([]);
   const [isWaiting, setIsWaiting] = useState(false);
-  const [inputData, setInputData] = useState('')
+  const [inputData, setInputData] = useState("");
   const [editorContent, setEditorContent] = useState({
     lang: language,
     code: "",
@@ -25,13 +25,24 @@ const EditorPage = () => {
     type: "",
   });
   const handleInput = (e) => {
-    setInputData(e.target.value)
-    if(e.key==="Enter") {
+    setInputData(e.target.value);
+    if (e.key === "Enter") {
       socketio.emit("input", e.target.value);
-      e.target.value=""
+      e.target.value = "";
     }
-   
   };
+  const sendToSocket = (e) => {
+    setEditorContent((prevContent) => {
+      const updatedContent = {
+        ...prevContent,
+        lang: language,
+        code: e,
+      };
+      socketio.emit("code", updatedContent);
+      return updatedContent;
+    });
+  };
+
   const terminalComponents = {
     Problem: <Problem />,
     Output: <Output />,
@@ -47,8 +58,8 @@ const EditorPage = () => {
 
   const handleSubmit = () => {
     setOutputData("");
-    const input = document.getElementById('input-box');
-    input.value=""
+    const input = document.getElementById("input-box");
+    input.value = "";
     const updatedContent = {
       ...editorContent,
       lang: language,
@@ -62,31 +73,34 @@ const EditorPage = () => {
   useEffect(() => {
     socketio.on("code", (data) => {
       const cleanedCode = data.code;
-      if (data.type === "info" ) {
+      if (data.type === "info") {
         setIsWaiting(true);
-        const input = document.getElementById('input-box');
-        input.focus()
+        const input = document.getElementById("input-box");
+        input.focus();
         setInputPrompt(cleanedCode);
-        
       } else {
-        setIsWaiting(false)
+        setIsWaiting(false);
         setInputPrompt("");
       }
-      console.log(cleanedCode)
+      console.log(cleanedCode);
       setOutputData((prevOutputData) => [...prevOutputData, cleanedCode]);
-     
     });
-    // socketio.on("inputPrompt",(data)=>{
-    //   console.log("Entered here")
-    // })
+    socketio.on("send", (data) => {
+      setEditorContent({
+        ...editorContent,
+        lang: data.lang,
+        code: data.code,
+      });
+      setLanguage(data.lang);
+      console.log(data);
+    });
 
     // Cleanup listener on unmount
     return () => {
       socketio.off("code");
-      socketio.off("inputPrompt")
+      socketio.off("inputPrompt");
     };
   }, []);
-
 
   // const handleValidation = (markers)=> {
   //   markers.forEach(marker=> console.log('onValidate', marker.message))
@@ -121,12 +135,7 @@ const EditorPage = () => {
             className=" m-4 cursor-pointer md:block hidden"
           />
         )}
-        <button
-          className=" hover:border hover:border-gray-400 rounded-md px-3 md:mx-2 mx-4 py-[2px]"
-          onClick={() => {
-            socketio.emit("input", "hi");
-          }}
-        >
+        <button className=" hover:border hover:border-gray-400 rounded-md px-3 md:mx-2 mx-4 py-[2px]">
           Files
         </button>
       </nav>
@@ -171,13 +180,7 @@ const EditorPage = () => {
           theme="vs-dark"
           className=""
           value={editorContent.code}
-          onChange={(value) =>
-            setEditorContent({
-              ...editorContent,
-              code: value,
-              lang: "python",
-            })
-          }
+          onChange={sendToSocket}
           width={editorWidth}
         />
 

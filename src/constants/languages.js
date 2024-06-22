@@ -3,6 +3,7 @@ export const languages = [
     "Python",
     "Java",
     "Php",
+    "C",
     "C++",
     "TypeScript"
 ]
