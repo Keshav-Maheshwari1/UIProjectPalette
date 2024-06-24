@@ -39,7 +39,7 @@ export const languages = [
   {
     language: "Java",
     code: `
-        public class Heelo{
+        public class Main{
             public static void main(String[] args){
                 // write your code here
                 System.out.println("Heelo, World!");
