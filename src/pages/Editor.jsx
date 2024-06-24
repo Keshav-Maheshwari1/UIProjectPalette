@@ -134,7 +134,10 @@ const EditorPage = () => {
             size={28}
             className=" m-4 cursor-pointer md:block hidden"
           />
+          
         )}
+
+
         <button className=" hover:border hover:border-gray-400 rounded-md px-3 md:mx-2 mx-4 py-[2px]">
           Files
         </button>
@@ -151,21 +154,21 @@ const EditorPage = () => {
         } col-start-1 col-end-3 row-span-1`}
       >
         {/* <!-- Header Section --> */}
-        <header className="bg-black text-[#222831] flex flex-wrap items-center justify-between max-w-full px-4">
+        <header className="bg-black text-[#222831] flex items-center justify-between max-w-full px-4 py-2">
           <select
             onChange={handleSelect}
             name="lang"
             id="lang"
-            className="text-white bg-black outline-none border-gray-400 border px-3 py-1 rounded-md"
+            className="text-white bg-black outline-none border-[#1c1c1c] border-b-2 px-3 py-1 rounded-sm m-2 "
           >
             {languages.map((lang, i) => (
-              <option value={lang} key={i}>
-                {lang}
+              <option value={lang.language} key={i} className="">
+                {lang.language}
               </option>
             ))}
           </select>
           <button
-            className="border text-white border-gray-400 px-3 lg:mr-12 py-1 rounded"
+            className="border text-white border-[#1c1c1c] px-3 lg:mr-12 py-1 rounded"
             onClick={handleSubmit}
           >
             Run

@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: sans-serif;
+}
+
 .resizable {
   resize: both; /* allows resizing in both directions */
   overflow: auto;
