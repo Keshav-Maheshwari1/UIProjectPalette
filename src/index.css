@@ -10,7 +10,6 @@
 #editor-page {
   display: grid;
   min-height: 100svh;
-  grid-template-columns: 200px 1fr;
   grid-template-rows: 50px 1fr;
 }
 
