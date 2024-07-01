@@ -1,17 +1,13 @@
 import React from "react";
 import Brain from "../assets/brain.svg";
 const Room = () => {
-
-
-        const handleSubmit = ()=>{
-
-        }
+  const handleSubmit = () => {};
   return (
-        <main
+    <main
       className="h-screen w-screen bg-cover bg-center flex justify-center items-center"
       style={{ backgroundImage: `url(${Brain})` }}
     >
-      <div className="backdrop-blur-lg bg-white/20 h-2/5 w-11/12 sm:w-4/5 md:w-2/5 lg:w-1/3 xl:w-1/4 rounded-md shadow-lg p-6">
+      <div className="backdrop-blur-lg bg-white/10 h-2/5 w-11/12 sm:w-4/5 md:w-2/5 lg:w-1/3 xl:w-1/4 rounded-md shadow-lg p-6">
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <label htmlFor="name" className="text-xl font-bold">
             Name:
@@ -39,8 +35,8 @@ const Room = () => {
           </button>
         </form>
       </div>
-    </main>  
-    );
+    </main>
+  );
 };
 
 export default Room;
