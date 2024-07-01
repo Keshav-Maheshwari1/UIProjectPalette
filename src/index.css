@@ -21,6 +21,10 @@
   grid-column: 1;
 }
 
+.nav-icons {
+  transition: opacity 1.6s linear;
+}
+
 .couraselImgs {
   box-shadow: 0 5px 13px 0 black;
 }
@@ -30,6 +34,7 @@
   animation-timeline: view();
   animation-range: entry 0% cover 80%;
 }
+
 
 @keyframes appear {
   from {

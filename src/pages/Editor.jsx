@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { languages } from "../constants/languages";
+import { codeSnippets, languages } from "../constants/languages";
 import { terminals } from "../constants/terminal";
 import { Editor } from "@monaco-editor/react";
 import { Code, MenuIcon } from "lucide-react";
@@ -11,16 +11,16 @@ import Terminal from "../Components/Terminal";
 import socketio from "../constants/server";
 const EditorPage = () => {
   const [terminal, setTerminal] = useState("Terminal");
-  const [language, setLanguage] = useState("javascript");
+  const [language, setLanguage] = useState("c");
   const [sideBarShown, setSideBarShown] = useState(false);
   const [editorWidth, setEditorWidth] = useState(window.innerWidth);
   const [inputPrompt, setInputPrompt] = useState("");
   const [outputData, setOutputData] = useState([]);
   const [isWaiting, setIsWaiting] = useState(false);
   const [inputData, setInputData] = useState("");
-  const [sideBarWidth, setSideBarWidth] = useState(200)
+  const [sideBarWidth, setSideBarWidth] = useState(0)
   const [editorHeight, setEditorHeight] = useState(403)
-  const [terminalHeight, setTerminalHeight] = useState(200)
+  const [terminalHeight, setTerminalHeight] = useState(0)
   const [editorContent, setEditorContent] = useState({
     lang: language,
     code: "",
@@ -102,6 +102,7 @@ const EditorPage = () => {
 
   const handleSelect = (e) => {
     setLanguage(e.currentTarget.value);
+    console.log(e.currentTarget.value)
   };
 
   useEffect(()=> {
@@ -128,7 +129,7 @@ const EditorPage = () => {
     function stopResize() {
       window.removeEventListener('mousemove', resize);
     }
-  }, [])
+  }, [sideBarWidth])
 
   useEffect(() => {
     const resizeLine = document.getElementById("resize-line");
@@ -141,61 +142,64 @@ const EditorPage = () => {
       window.addEventListener("mouseup",stopResize);
     });
     function resize(e) {
-      console.log(terminalContainer.style.height)
-      terminalContainer.style.height  = window.innerHeight - e.pageY+ 'px';
-      setEditorHeight(e.pageY-90)
-      setTerminalHeight(window.innerHeight - e.pageY);
+      if(window.innerHeight - e.pageY>=200 && window.innerHeight-e.pageY <=550) {
+        terminalContainer.style.height  = window.innerHeight - e.pageY -1 + 'px';
+        setEditorHeight(e.pageY-101)
+        setTerminalHeight(window.innerHeight - e.pageY -1);
+      }
+
       console.log(e.pageY)
     }
 
     function stopResize() {
       window.removeEventListener('mousemove', resize)
+      
     }
 
-  }, []);
+  }, [terminalHeight]);
 
   return (
-    <main id="editor-page" className={` grid-cols-[${sideBarWidth}px_1fr]  bg-black overflow-hidden`}>
+    <main id="editor-page" className={`${sideBarWidth!==0? `grid-cols-[${sideBarWidth}px_1fr]`: 'grid-cols-[200px_1fr]'}   bg-black overflow-hidden`}>
       <nav className=" flex flex-wrap text-white col-start-1 bg-gray-900 border-b border-b-gray-600 col-end-3 items-center row-start-1 row-end-2 ">
-        {sideBarShown ? (
-          <XIcon
+      
+      <div className="relative w-10 h-10 ml-5 md:block hidden">
+      <XIcon
             onClick={() => setSideBarShown(!sideBarShown)}
             size={28}
-            className="m-4 cursor-pointer md:block hidden"
+            className={` ${sideBarShown ? 'opacity-100': 'opacity-0 hidden'} absolute top-[20%] left-0 nav-icons cursor-pointer`}
           />
-        ) : (
           <MenuIcon
             onClick={() => setSideBarShown(!sideBarShown)}
             size={28}
-            className=" m-4 cursor-pointer md:block hidden"
+            className={` ${sideBarShown ? 'opacity-0 hidden': 'opacity-100'} absolute top-[20%] left-0 nav-icons cursor-pointer`}
           />
-        )}
+      </div>
+        
         <button
           className=" hover:border hover:border-gray-400 rounded-md px-3 md:mx-2 mx-4 py-[2px]"
           onClick={() => {
             socketio.emit("input", "hi");
           }}
         >
-          Files
+          {codeSnippets[language]?.file}
         </button>
       </nav>
       <aside
       id="sidebar"
-      style={{minHeight: 200}}
         className={`${
           sideBarShown ? "md:flex" : "hidden"
-        } hidden relative bg-gray-600 z-[9999] row-start-2 row-end-3`}
+        } hidden relative col-start-1 col-end-2 bg-gray-600 z-[9999] row-start-2 row-end-3`}
       >
         <div id="sidebar-resize-line" className=" absolute top-0 -right-1 h-full w-[8px] cursor-e-resize hover:border-r-[4px] hover:border-r-[#548ae8]"></div>
       </aside>
       {/* <!-- Left Section: Resizable Horizontally --> */}
       <section
-        className={`grid grid-rows-[50px_1fr_${terminalHeight}px] ${
+        className={`grid overflow-hidden ${terminalHeight !==0 ? `grid-rows-[50px_1fr_${terminalHeight}px]`: 'grid-rows-[50px_1fr_200px]'}  ${
           sideBarShown ? "md:col-start-2 " : "md:col-start-1"
-        } col-start-1 col-end-3 row-start-2 row-end-3 `}
+        } col-start-1 col-end-3 `}
       >
         {/* <!-- Header Section --> */}
-        <header className="bg-black text-[#222831] row-start-1 row-end-2 flex flex-wrap items-center justify-between max-w-full px-4">
+        <header style={{minHeight:40}} className="bg-black text-[#222831] row-start-1 row-end-2 flex flex-wrap items-center justify-between max-w-full px-4">
           <select
             onChange={handleSelect}
             name="lang"
@@ -203,8 +207,8 @@ const EditorPage = () => {
             className="text-white bg-black outline-none border-gray-400 border px-3 py-1 rounded-md"
           >
             {languages.map((lang, i) => (
-              <option value={lang} key={i}>
-                {lang}
+              <option value={lang.language} key={i}>
+                {lang.language==='cpp' ? 'C++': lang.language[0].toLocaleUpperCase()+ lang.language.slice(1,lang.language.length)}
               </option>
             ))}
           </select>
@@ -216,15 +220,13 @@ const EditorPage = () => {
           </button>
         </header>
         {/* <!-- Main Content Area --> */}
-
         <Editor
           defaultLanguage={language}
           language={language}
-          defaultValue=""
           theme="vs-dark"
           height={editorHeight}
           className="row-start-2 row-end-3"
-          value={editorContent.code}
+          value={codeSnippets[language]?.code}
           onChange={(value) =>
             setEditorContent({
               ...editorContent,
@@ -237,11 +239,11 @@ const EditorPage = () => {
 
         <footer
           id="terminal-container"
-          className="relative text-[gray] row-start-3 row-end-4 bg-gray-600/30 grid grid-rows-[40px_1fr] border-t-[1.4px] border-t-gray-500"
+          className="relative text-[gray] row-start-3 row-end-4 z-[999] bg-gray-600/30 grid grid-rows-[40px_1fr] border-t-[1.4px] border-t-gray-500"
         >
           <div
             id="resize-line"
-            className=" absolute -top-2 left-0 w-full h-[8px] hover:border-b-[3px] cursor-s-resize hover:border-b-[blue]"
+            className=" absolute -top-1 z-[999] left-0 w-full h-[30px] hover:border-t-[5px] cursor-s-resize hover:border-t-[blue]"
           ></div>
           <div className="flex gap-4 w-full px-4">
             {terminals.map((term, i) => (
