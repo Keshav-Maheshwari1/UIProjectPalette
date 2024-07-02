@@ -77,8 +77,8 @@ function executePython(syntax, filename, type, language) {
 }
 
 function executeJava(code, filename, type, language) {
-  const fileName = `Main.java`;
-
+  const fileName = `Main.java`; 
+ 
   try {
     fs.writeFileSync(fileName, code);
     const compileprocessCode = spawn("javac", [fileName]);
