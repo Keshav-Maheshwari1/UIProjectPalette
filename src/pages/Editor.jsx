@@ -101,8 +101,8 @@ const EditorPage = () => {
   }, [sideBarShown]);
 
   const handleSelect = (e) => {
-    setLanguage(e.currentTarget.value);
-    console.log(e.currentTarget.value)
+    setLanguage(e.currentTarget.value==="C++" ? 'cpp': e.currentTarget.value.toLowerCase());
+
   };
 
   useEffect(()=> {
