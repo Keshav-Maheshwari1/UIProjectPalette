@@ -88,78 +88,78 @@ export const languages = [
 export const codeSnippets = {
   c: {
     code: `
-        #include<stdio.h>
+#include<stdio.h>
 
-        int main(){
-            // write your code here
-            printf("Heelo, World!");
-            return 0;
-        }
+int main(){
+    // write your code here
+    printf("Heelo, World!");
+    return 0;
+}
     `,
     file: "main.c",
   },
   cpp: {
     code: `
-    #include <iostream>
-    using namespace std;
+#include <iostream>
+using namespace std;
 
-    int main(){
-        // write your code here
-        cout<< "Heelo, World!"<<endl;
-    }
-`,
+int main(){
+    // write your code here
+    cout<< "Heelo, World!"<<endl;
+}
+    `,
     file: "main.cpp",
   },
   python: {
     code: `
-    def main():
-        // write your code here
-        print("Heelo, World!")
-    if __name__ == "__main__":
-        main()
+def main():
+    # write your code here 
+    print("Heelo, World!")
+if __name__ == "__main__":
+    main()
 `,
     file: "main.py",
   },
   java: {
     code: `
-    public class Main{
-        public static void main(String[] args){
-            // write your code here
-            System.out.println("Heelo, World!");
-        }
+public class Main{
+    public static void main(String[] args){
+        // write your code here
+        System.out.println("Heelo, World!");
     }
+}
 `,
     file: "Main.java",
   },
   javascript: {
     code: `
-    (function(){
-        function main(){
-            // write your code here
-            console.log("Heelo, World!");
-        }
-        main();
-    })();
+(function(){
+    function main(){
+        // write your code here
+        console.log("Heelo, World!");
+    }
+    main();
+})();
 `,
     file: "main.js",
   },
   typescript: {
     code: `
-    (function(){
-        function main(): void {
-            // write your code here
-            console.log("Heelo, World!");
-        }
-        main();
-    })();
+(function(){
+    function main(): void {
+        // write your code here
+        console.log("Heelo, World!");
+    }
+    main();
+})();
 `,
     file: "main.ts",
   },
   rust: {
     code: `
-    fn main(){
-        println!("Heelo, World!");
-    }
+fn main(){
+    println!("Heelo, World!");
+}
 `,
     file: "main.rs",
   },
