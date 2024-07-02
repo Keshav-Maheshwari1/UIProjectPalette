@@ -77,7 +77,9 @@ const EditorPage = () => {
       console.log(cleanedCode);
       setOutputData((prevOutputData) => [...prevOutputData, cleanedCode]);
     });
-
+    socketio.on("err",(data)=>{
+      console.log(data)
+    })
     return () => {
       socketio.off("code");
       socketio.off("inputPrompt");

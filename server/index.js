@@ -260,7 +260,7 @@ function handleProcessOutput(language, filename, type) {
 function handleError(data, language, filename, type) {
   console.error("Error: " + data);
   const error = data.toString();
-  io.emit("error", {
+  io.emit("err", {
     lang: language,
     code: error,
     type: type,
