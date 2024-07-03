@@ -54,7 +54,7 @@ function handleCodeExecution(language, syntax, filename, type) {
     case "c":
       executeC(syntax, filename, type, language);
       break;
-    case "c++":
+    case "cpp":
       executeCpp(syntax, filename, type, language);
       break;
     case "rust":
