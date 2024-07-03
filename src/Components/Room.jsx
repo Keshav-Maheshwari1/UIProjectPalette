@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import Brain from "../assets/brain.svg";
-import { redirect, useNavigate } from "react-router-dom";
+
 const Room = () => {
+
   const [roomData, setRoomData] = useState({
     name: "",
     id: "",
@@ -14,7 +15,7 @@ const Room = () => {
       id: e.target.roomId.value,
     });
     if ([roomData.id, roomData.name].some((val) => val !== "")) {
-      return redirect("../room");
+      window.location.href= '../editor';
     }
   };
 

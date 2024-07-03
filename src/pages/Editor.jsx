@@ -19,7 +19,7 @@ const EditorPage = () => {
   const [isWaiting, setIsWaiting] = useState(false);
   const [inputData, setInputData] = useState("");
   const [sideBarWidth, setSideBarWidth] = useState(0);
-  const [editorHeight, setEditorHeight] = useState(403);
+  const [editorHeight, setEditorHeight] = useState(window.innerHeight-300);
   const [terminalHeight, setTerminalHeight] = useState(0);
   const [editorContent, setEditorContent] = useState({
     lang: language,
@@ -92,6 +92,7 @@ const EditorPage = () => {
       ? setEditorWidth(window.innerWidth - 200)
       : setEditorWidth(window.innerWidth);
     window.onresize = () => {
+      setEditorHeight(window.innerHeight-300)
       setEditorWidth(window.innerWidth);
     };
   }, [sideBarShown]);
@@ -209,7 +210,7 @@ const EditorPage = () => {
         className={`grid overflow-hidden ${
           terminalHeight !== 0
             ? `grid-rows-[50px_1fr_${terminalHeight}px]`
-            : "grid-rows-[50px_1fr_200px]"
+            : "grid-rows-[50px_auto_200px]"
         }  ${
           sideBarShown ? "md:col-start-2 " : "md:col-start-1"
         } col-start-1 col-end-3 `}
