@@ -55,6 +55,7 @@ const EditorPage = () => {
       ...editorContent,
       lang: language,
       type: "run",
+      file: codeSnippets[language]?.file
     };
 
     // Emit the updated state

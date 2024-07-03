@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import Brain from "../assets/brain.svg";
+import { useNavigate } from "react-router-dom";
 const Room = () => {
-  const handleSubmit = () => {};
+
+  const [roomData, setRoomData] = useState({
+    name: '',
+    id: ''
+  })
+  const handleSubmit = (e) => {
+    e.preventDefault();
+   window.location.href="http://localhost:5173/editor"
+    
+  };
   return (
     <main
       className="h-screen w-screen bg-cover bg-center flex justify-center items-center"
