@@ -9,9 +9,13 @@ const Room = () => {
   })
   const handleSubmit = (e) => {
     e.preventDefault();
-   window.location.href="http://localhost:5173/editor"
+    setRoomData({...roomData, name: e.target.name.value, id: e.target.roomId.value})
+   if([roomData.id, roomData.name].some(val=> val!=="")) {
+    window.location.href="http://localhost:5173/editor"
+   }
     
   };
+
   return (
     <main
       className="h-screen w-screen bg-cover bg-center flex justify-center items-center"
