@@ -1,15 +1,8 @@
-// import express from "express";
-// import http from "http";
-// import { Server } from "socket.io";
-// import { spawn } from "child_process";
-// import fs from "fs";
-// const app = express();
-// const server = http.createServer(app);
-// const io = new Server(server, {
-//   cors: {
-//     origin: "*",
-//   },
-// });
+import express from "express";
+import http from "http";
+import { Server } from "socket.io";
+import { spawn } from "child_process";
+import fs from "fs";
 
 // let processCode;
 
@@ -281,12 +274,6 @@
 // server.listen(3001, () => {
 //   console.log("Running on port 3001");
 // });
-
-
-import http from "http";
-import { Server } from "socket.io";
-import { spawn } from "child_process";
-import fs from "fs";
 
 const app = express();
 const server = http.createServer(app);

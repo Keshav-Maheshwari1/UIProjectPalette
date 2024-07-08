@@ -3,11 +3,14 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
+import { RoomProvider } from "./context/RoomContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <RoomProvider>
+        <App />
+      </RoomProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

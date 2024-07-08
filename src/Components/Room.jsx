@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Brain from "../assets/brain.svg";
-import { redirect, useNavigate } from "react-router-dom";
+import { RoomContext } from "../context/RoomContext";
 const Room = () => {
-  const [roomData, setRoomData] = useState({
-    name: "",
-    id: "",
-  });
+  const { roomData, setRoomData } = useContext(RoomContext);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setRoomData({
@@ -14,7 +12,7 @@ const Room = () => {
       id: e.target.roomId.value,
     });
     if ([roomData.id, roomData.name].some((val) => val !== "")) {
-      return redirect("../room");
+      return (window.location.href = "../editor");
     }
   };
 
