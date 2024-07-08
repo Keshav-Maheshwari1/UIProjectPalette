@@ -1,9 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import Brain from "../assets/brain.svg";
 import { RoomContext } from "../context/RoomContext";
 const Room = () => {
   const { roomData, setRoomData } = useContext(RoomContext);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setRoomData({
