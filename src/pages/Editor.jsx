@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { codeSnippets, languages } from "../constants/languages";
 import { terminals } from "../constants/terminal";
 import { Editor } from "@monaco-editor/react";
@@ -9,7 +9,13 @@ import Output from "../Components/Output";
 import Problem from "../Components/Problem";
 import Terminal from "../Components/Terminal";
 import socketio from "../constants/server";
+import { RoomContext } from "../context/RoomContext";
+import Navbar from "../Components/Navbar";
+import Sidebar from "../Components/Sidebar";
+import Footer from "../Components/Footer";
+
 const EditorPage = () => {
+  const { roomData, setRoomData } = useContext(RoomContext);
   const [terminal, setTerminal] = useState("Terminal");
   const [language, setLanguage] = useState("c");
   const [sideBarShown, setSideBarShown] = useState(false);
@@ -17,16 +23,17 @@ const EditorPage = () => {
   const [inputPrompt, setInputPrompt] = useState("");
   const [outputData, setOutputData] = useState([]);
   const [isWaiting, setIsWaiting] = useState(false);
-  const [inputData, setInputData] = useState("");
   const [sideBarWidth, setSideBarWidth] = useState(0);
-  const [editorHeight, setEditorHeight] = useState(window.innerHeight-300);
+  const [editorHeight, setEditorHeight] = useState(window.innerHeight - 300);
   const [terminalHeight, setTerminalHeight] = useState(0);
-  const [editorContent, setEditorContent] = useState({
-    lang: language,
-    code: "",
-    file: "",
-    type: "",
-  });
+
+  useEffect(() => {
+    setRoomData({
+      ...roomData,
+      lang: language,
+      file: codeSnippets[language]?.file,
+    });
+  }, []);
   const handleInput = (e) => {
     setInputData(e.target.value);
     if (e.key === "Enter") {
@@ -52,10 +59,9 @@ const EditorPage = () => {
     const input = document.getElementById("input-box");
     input.value = "";
     const updatedContent = {
-      ...editorContent,
+      ...roomData,
       lang: language,
       type: "run",
-      file: codeSnippets[language]?.file
     };
 
     // Emit the updated state
@@ -70,17 +76,17 @@ const EditorPage = () => {
         setIsWaiting(true);
         const input = document.getElementById("input-box");
         input.focus();
-        setInputPrompt(cleanedCode);
+        // setInputPrompt(cleanedCode);
       } else {
         setIsWaiting(false);
-        setInputPrompt("");
+        // setInputPrompt("");
       }
       console.log(cleanedCode);
       setOutputData((prevOutputData) => [...prevOutputData, cleanedCode]);
     });
-    socketio.on("err",(data)=>{
-      console.log(data)
-    })
+    socketio.on("err", (data) => {
+      console.log(data);
+    });
     return () => {
       socketio.off("code");
       socketio.off("inputPrompt");
@@ -92,7 +98,7 @@ const EditorPage = () => {
       ? setEditorWidth(window.innerWidth - 200)
       : setEditorWidth(window.innerWidth);
     window.onresize = () => {
-      setEditorHeight(window.innerHeight-300)
+      setEditorHeight(window.innerHeight - 300);
       setEditorWidth(window.innerWidth);
     };
   }, [sideBarShown]);
@@ -167,44 +173,12 @@ const EditorPage = () => {
           : "grid-cols-[200px_1fr]"
       }   bg-black overflow-hidden`}
     >
-      <nav className=" flex flex-wrap text-white col-start-1 bg-gray-900 border-b border-b-gray-600 col-end-3 items-center row-start-1 row-end-2 ">
-        <div className="relative w-10 h-10 ml-5 md:block hidden">
-          <XIcon
-            onClick={() => setSideBarShown(!sideBarShown)}
-            size={28}
-            className={` ${
-              sideBarShown ? "opacity-100" : "opacity-0 hidden"
-            } absolute top-[20%] left-0 nav-icons cursor-pointer`}
-          />
-          <MenuIcon
-            onClick={() => setSideBarShown(!sideBarShown)}
-            size={28}
-            className={` ${
-              sideBarShown ? "opacity-0 hidden" : "opacity-100"
-            } absolute top-[20%] left-0 nav-icons cursor-pointer`}
-          />
-        </div>
-
-        <button
-          className=" hover:border hover:border-gray-400 rounded-md px-3 md:mx-2 mx-4 py-[2px]"
-          onClick={() => {
-            socketio.emit("input", "hi");
-          }}
-        >
-          {codeSnippets[language]?.file}
-        </button>
-      </nav>
-      <aside
-        id="sidebar"
-        className={`${
-          sideBarShown ? "md:flex" : "hidden"
-        } hidden relative col-start-1 col-end-2 bg-gray-600 z-[9999] row-start-2 row-end-3`}
-      >
-        <div
-          id="sidebar-resize-line"
-          className=" absolute top-0 -right-1 h-full w-[8px] cursor-e-resize hover:border-r-[4px] hover:border-r-[#548ae8]"
-        ></div>
-      </aside>
+      <Navbar
+        file={codeSnippets[language]?.file}
+        sideBarShown={sideBarShown}
+        setSideBarShown={setSideBarShown}
+      />
+      <Sidebar sideBarShown={sideBarShown} />
       {/* <!-- Left Section: Resizable Horizontally --> */}
       <section
         className={`grid overflow-hidden ${
@@ -251,7 +225,7 @@ const EditorPage = () => {
           className="row-start-2 row-end-3"
           value={codeSnippets[language]?.code}
           onChange={(value) =>
-            setEditorContent({
+            setRoomData({
               ...editorContent,
               code: value,
               lang: "python",
@@ -260,35 +234,13 @@ const EditorPage = () => {
           width={editorWidth - 1}
         />
 
-        <footer
-          id="terminal-container"
-          className="relative text-[gray] row-start-3 row-end-4 z-[999] bg-gray-600/30 grid grid-rows-[40px_1fr] border-t-[1.4px] border-t-gray-500"
-        >
-          <div
-            id="resize-line"
-            className=" absolute -top-1 z-[999] left-0 w-full h-[30px] hover:border-t-[5px] cursor-s-resize hover:border-t-[blue]"
-          ></div>
-          <div className="flex gap-4 w-full px-4">
-            {terminals.map((term, i) => (
-              <button
-                key={i}
-                onClick={() => setTerminal(term)}
-                className={`${
-                  terminal === term ? "border-b-[#43aff7] border-b" : ""
-                } px-2 pt-2 cursor-pointer hover:text-gray-300`}
-              >
-                {term}
-              </button>
-            ))}
-            <button
-              className="ml-auto hover:text-gray-300 cursor-pointer pt-1 lg:mr-12"
-              onClick={handleSubmit}
-            >
-              Close
-            </button>
-          </div>
-          {terminalComponents[terminal]}
-        </footer>
+        <Footer
+          setTerminal={setTerminal}
+          terminal={terminal}
+          handleSubmit={handleSubmit}
+          terminalComponents={terminalComponents}
+          terminals={terminals}
+        />
       </section>
     </main>
   );
